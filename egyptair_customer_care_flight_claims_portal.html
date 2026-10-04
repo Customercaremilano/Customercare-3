@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EGYPTAIR - Flight Compensation Claims & Passport Vault Portal</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        egyptair: {
+                            blue: '#00205B',
+                            gold: '#C5A059',
+                            darkGold: '#A37E36',
+                            navy: '#00153E',
+                            lightBg: '#F4F6F9',
+                            cardBg: '#FFFFFF',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .mrz-font { font-family: 'Courier New', Courier, monospace; letter-spacing: 2px; }
+        .tab-active { border-bottom: 3px solid #C5A059; color: #00205B; font-weight: 700; }
+        .image-canvas-container { overflow: hidden; position: relative; cursor: grab; }
+        .image-canvas-container:active { cursor: grabbing; }
+    </style>
+</head>
+<body class="bg-gray-100 font-sans text-gray-800 min-h-screen flex flex-col">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="bg-egyptair-blue text-white shadow-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <div class="bg-white text-egyptair-blue font-bold px-3 py-1.5 rounded-lg text-xl tracking-wider border-2 border-egyptair-gold flex items-center space-x-2">
+                    <i class="fa-solid font-bold fa-plane-departure text-egyptair-gold"></i>
+                    <span>EGYPTAIR</span>
+                </div>
+                <div class="hidden md:block border-l border-blue-800 pl-4">
+                    <h1 class="text-sm font-semibold text-gray-200">Customer Care & Flight Claims Portal</h1>
+                    <p class="text-xs text-egyptair-gold">Statutory Disruption Compensation & Passport Vault</p>
+                </div>
+            </div>
+
+            <!-- VIEW SWITCHER BUTTONS -->
+            <div class="flex items-center bg-egyptair-navy p-1 rounded-xl border border-blue-900">
+                <button id="btn-passenger-view" onclick="switchView('passenger')" class="px-4 py-2 text-xs md:text-sm font-medium rounded-lg text-white bg-egyptair-gold transition-all duration-200 flex items-center space-x-2 shadow-sm">
+                    <i class="fa-solid fa-user"></i>
+                    <span>Passenger Intake Portal</span>
+                </button>
+                <button id="btn-agent-view" onclick="switchView('agent')" class="px-4 py-2 text-xs md:text-sm font-medium rounded-lg text-gray-300 hover:text-white transition-all duration-200 flex items-center space-x-2">
+                    <i class="fa-solid fa-shield-halved"></i>
+                    <span>Customer Care Agent Desk</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- =================================================================== -->
+        <!-- PASSENGER INTAKE PORTAL VIEW                                       -->
+        <!-- =================================================================== -->
+        <div id="view-passenger" class="space-y-6">
+            
+            <!-- HERO BANNER -->
+            <div class="bg-gradient-to-r from-egyptair-blue via-egyptair-navy to-blue-900 text-white rounded-2xl p-6 md:p-8 shadow-lg border-b-4 border-egyptair-gold flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="space-y-2 max-w-2xl">
+                    <span class="bg-egyptair-gold/20 text-egyptair-gold text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-egyptair-gold/40">Official Portal</span>
+                    <h2 class="text-2xl md:text-3xl font-extrabold text-white">Flight Disruption Compensation Request</h2>
+                    <p class="text-gray-300 text-sm leading-relaxed">
+                        Submit a compensation claim for flight delays, cancellations, or overbooked flights in accordance with air passenger rights regulations.
+                    </p>
+                </div>
+                <div class="bg-white/10 backdrop-blur-md p-4 rounded-xl border border-white/20 text-center min-w-[200px]">
+                    <span class="block text-xs uppercase tracking-wider text-gray-300">Max Compensation</span>
+                    <span class="text-3xl font-extrabold text-egyptair-gold">€600 / $650</span>
+                    <span class="block text-xs text-gray-300 mt-1">Per Passenger Standard</span>
+                </div>
+            </div>
+
+            <!-- MAIN FORM CARD -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+                <!-- STEP INDICATOR -->
+                <div class="bg-gray-50 border-b border-gray-200 px-6 py-4">
+                    <div class="flex justify-between items-center max-w-2xl mx-auto">
+                        <div class="flex items-center space-x-2 text-egyptair-blue font-semibold text-sm">
+                            <span class="w-7 h-7 rounded-full bg-egyptair-blue text-white flex items-center justify-center text-xs">1</span>
+                            <span>Flight Details</span>
+                        </div>
+                        <div class="h-0.5 bg-gray-300 flex-grow mx-4"></div>
+                        <div class="flex items-center space-x-2 text-gray-500 font-semibold text-sm">
+                            <span class="w-7 h-7 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center text-xs">2</span>
+                            <span>Passport Upload</span>
+                        </div>
+                        <div class="h-0.5 bg-gray-300 flex-grow mx-4"></div>
+                        <div class="flex items-center space-x-2 text-gray-500 font-semibold text-sm">
+                            <span class="w-7 h-7 rounded-full bg-gray-200 text-gray-600 flex items-center justify-center text-xs">3</span>
+                            <span>Review & Submit</span>
+                        </div>
+                    </div>
+                </div>
+
+                <form id="claimForm" onsubmit="handleClaimSubmit(event)" class="p-6 md:p-8 space-y-8">
+                    
+                    <!-- SECTION 1: FLIGHT & CLAIM INFORMATION -->
+                    <div>
+                        <h3 class="text-lg font-bold text-egyptair-blue mb-4 flex items-center space-x-2 border-b pb-2">
+                            <i class="fa-solid fa-plane-circle-exclamation text-egyptair-gold"></i>
+                            <span>1. Disruption Details</span>
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-700 mb-2">Booking Reference (PNR) *</label>
+                                <input type="text" maxlength="6" placeholder="e.g. MS789K" required class="w-full uppercase px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-egyptair-blue focus:border-transparent outline-none font-mono text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-700 mb-2">Flight Number *</label>
+                                <input type="text" placeholder="e.g. MS777" required class="w-full uppercase px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-egyptair-blue focus:border-transparent outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-700 mb-2">Date of Travel *</label>
+                                <input type="date" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-egyptair-blue focus:border-transparent outline-none text-sm">
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-700 mb-2">Type of Disruption *</label>
+                                <select id="disruptionType" onchange="updateCalculatedTier()" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-egyptair-blue focus:border-transparent outline-none text-sm bg-white">
+                                    <option value="">Select Disruption Reason...</option>
+                                    <option value="delay">Flight Delay (>3 Hours)</option>
+                                    <option value="cancellation">Flight Cancellation</option>
+                                    <option value="overbooking">Involuntary Denied Boarding (Overbooking)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-700 mb-2">Route Distance / Flight Type *</label>
+                                <select id="routeDistance" onchange="updateCalculatedTier()" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-egyptair-blue focus:border-transparent outline-none text-sm bg-white">
+                                    <option value="short">Short Distance (Under 1,500 km) - e.g. Cairo to Amman</option>
+                                    <option value="medium">Medium Distance (1,500 km - 3,500 km) - e.g. Cairo to London</option>
+                                    <option value="long">Long Distance (Over 3,500 km) - e.g. Cairo to New York / Tokyo</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- CALCULATED STATUTORY ENTITLEMENT BANNER -->
+                        <div id="entitlementBox" class="mt-4 p-4 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-between">
+                            <div class="flex items-center space-x-3">
+                                <i class="fa-solid fa-calculator text-egyptair-blue text-xl"></i>
+                                <div>
+                                    <span class="block text-xs font-bold uppercase text-blue-900">Estimated Statutory Entitlement</span>
+                                    <span id="entitlementText" class="text-sm text-blue-700">Select disruption type to calculate statutory payout tier</span>
+                                </div>
+                            </div>
+                            <span id="entitlementBadge" class="text-lg font-extrabold text-egyptair-blue bg-white px-4 py-1.5 rounded-lg border border-blue-200 shadow-sm">€0</span>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 2: PASSENGER IDENTITY & PASSPORT SCAN -->
+                    <div>
+                        <h3 class="text-lg font-bold text-egyptair-blue mb-4 flex items-center space-x-2 border-b pb-2">
+                            <i class="fa-solid fa-passport text-egyptair-gold"></i>
+                            <span>2. Passenger Identification & Passport Scan</span>
+                        </h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-700 mb-2">Full Passenger Name (As on Passport) *</label>
+                                <input type="text" id="passengerName" placeholder="e.g. MOHAMED AL-SAYED" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-egyptair-blue focus:border-transparent outline-none text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-700 mb-2">Passport Number *</label>
+                                <input type="text" id="passportNum" placeholder="e.g. A12345678" required class="w-full uppercase px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-egyptair-blue focus:border-transparent outline-none text-sm font-mono">
+                            </div>
+                        </div>
+
+                        <!-- UPLOAD DROPZONE -->
+                        <div class="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center bg-gray-50 hover:bg-gray-100 transition-colors cursor-pointer relative" id="dropzone" onclick="document.getElementById('passportInput').click()">
+                            <input type="file" id="passportInput" accept="image/*,.pdf" onchange="handleFileUpload(event)" class="hidden">
+                            
+                            <div id="uploadPlaceholder" class="space-y-3">
+                                <div class="w-12 h-12 rounded-full bg-blue-100 text-egyptair-blue mx-auto flex items-center justify-center text-xl">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-bold text-gray-800">Click to upload or drag & drop your Passport Scan</p>
+                                    <p class="text-xs text-gray-500 mt-1">Supports High Resolution JPG, PNG, or PDF (Max 10MB). Ensure MRZ zone at bottom is clear.</p>
+                                </div>
+                            </div>
+
+                            <!-- PREVIEW AREA AFTER UPLOAD -->
+                            <div id="uploadPreview" class="hidden flex flex-col md:flex-row items-center justify-between bg-white p-4 rounded-lg border border-gray-300 text-left gap-4">
+                                <div class="flex items-center space-x-4">
+                                    <div class="w-16 h-16 bg-gray-200 rounded overflow-hidden flex-shrink-0 flex items-center justify-center border">
+                                        <img id="passportImgPreview" src="" alt="Passport Preview" class="w-full h-full object-cover">
+                                    </div>
+                                    <div>
+                                        <p id="fileNameText" class="text-sm font-bold text-gray-800 truncate max-w-xs">passport_scan.jpg</p>
+                                        <p class="text-xs text-green-600 font-semibold flex items-center mt-1">
+                                            <i class="fa-solid fa-circle-check mr-1"></i> Document Uploaded & Verified
+                                        </p>
+                                    </div>
+                                </div>
+                                <button type="button" onclick="event.stopPropagation(); removeUploadedFile();" class="text-xs text-red-600 hover:text-red-800 font-bold px-3 py-1.5 rounded bg-red-50 hover:bg-red-100">
+                                    Remove File
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SECTION 3: BANK DISBURSEMENT DETAILS -->
+                    <div>
+                        <h3 class="text-lg font-bold text-egyptair-blue mb-4 flex items-center space-x-2 border-b pb-2">
+                            <i class="fa-solid fa-building-columns text-egyptair-gold"></i>
+                            <span>3. Bank Account for Direct Payout</span>
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-700 mb-2">IBAN / Account Number *</label>
+                                <input type="text" placeholder="EG00 0000 0000 0000 0000 0000 0000" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-egyptair-blue focus:border-transparent outline-none text-sm font-mono uppercase">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-700 mb-2">SWIFT / BIC Code *</label>
+                                <input type="text" placeholder="NBEGEGCXXX" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:ring-2 focus:ring-egyptair-blue focus:border-transparent outline-none text-sm font-mono uppercase">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SUBMIT BUTTON -->
+                    <div class="pt-4 border-t">
+                        <button type="submit" class="w-full bg-egyptair-blue hover:bg-egyptair-navy text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 text-base flex items-center justify-center space-x-2 border-b-4 border-egyptair-gold">
+                            <i class="fa-solid fa-paper-plane"></i>
+                            <span>Submit Official Compensation Claim</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+
+        <!-- =================================================================== -->
+        <!-- CUSTOMER CARE AGENT WORKSPACE VIEW                                 -->
+        <!-- =================================================================== -->
+        <div id="view-agent" class="hidden space-y-6">
+            
+            <!-- DESK HEADER BANNER -->
+            <div class="bg-egyptair-navy text-white rounded-2xl p-6 border-l-8 border-egyptair-gold shadow-md flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <span class="text-xs font-bold text-egyptair-gold uppercase tracking-wider">Internal Care Vault</span>
+                    <h2 class="text-2xl font-extrabold text-white">Claims Review & Passport Verification Workspace</h2>
+                    <p class="text-xs text-gray-300 mt-1">Agent Station #104 | Legal Disruption Settlement Queue</p>
+                </div>
+                <div class="flex items-center space-x-3">
+                    <span class="bg-blue-900 text-blue-200 text-xs px-3 py-1.5 rounded-lg border border-blue-700">
+                        <i class="fa-solid fa-user-shield mr-1"></i> SSO Authenticated
+                    </span>
+                    <span class="bg-green-900/60 text-green-300 text-xs px-3 py-1.5 rounded-lg border border-green-700">
+                        <i class="fa-solid fa-lock mr-1"></i> TLS 1.3 Encrypted
+                    </span>
+                </div>
+            </div>
+
+            <!-- CLAIMS DATA TABLE -->
+            <div class="bg-white rounded-2xl shadow-md border border-gray-200 overflow-hidden">
+                <div class="p-6 border-b border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
+                    <div>
+                        <h3 class="text-base font-bold text-egyptair-blue">Incoming Flight Compensation Queue</h3>
+                        <p class="text-xs text-gray-500">Click inspect to view uploaded passport scans and run verification checks</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="text-xs font-bold text-gray-600">Filter Status:</span>
+                        <select onchange="filterClaims(this.value)" class="text-xs border rounded-lg px-3 py-2 bg-gray-50 outline-none">
+                            <option value="all">All Claims</option>
+                            <option value="pending" selected>Pending Review</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead class="bg-egyptair-blue text-white uppercase text-[10px] tracking-wider">
+                            <tr>
+                                <th class="p-4">Claim ID</th>
+                                <th class="p-4">Passenger Name</th>
+                                <th class="p-4">PNR / Flight</th>
+                                <th class="p-4">Disruption Type</th>
+                                <th class="p-4">Entitlement</th>
+                                <th class="p-4">Status</th>
+                                <th class="p-4 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="claimsTableBody" class="divide-y divide-gray-200 font-medium">
+                            <!-- DYNAMICALLY POPULATED BY JAVASCRIPT -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+
+    <!-- =================================================================== -->
+    <!-- PASSPORT INSPECTION MODAL WORKSPACE (CANVAS TOOLKIT)              -->
+    <!-- =================================================================== -->
+    <div id="passportModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-5xl rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]">
+            
+            <!-- MODAL HEADER -->
+            <div class="bg-egyptair-blue text-white p-4 px-6 flex justify-between items-center border-b-2 border-egyptair-gold">
+                <div class="flex items-center space-x-3">
+                    <i class="fa-solid fa-magnifying-glass-location text-egyptair-gold text-lg"></i>
+                    <div>
+                        <h3 class="font-bold text-sm" id="modalPassengerTitle">Passenger Passport Document Inspection</h3>
+                        <p class="text-[10px] text-gray-300" id="modalClaimSub">Claim Ref: MS-2026-X8921</p>
+                    </div>
+                </div>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white text-xl font-bold p-1">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- MODAL BODY: SPLIT VIEW -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 flex-grow overflow-hidden">
+                
+                <!-- LEFT SIDE: IMAGE CANVAS WORKSPACE (2 COLS) -->
+                <div class="lg:col-span-2 bg-gray-900 p-4 flex flex-col justify-between relative overflow-hidden">
+                    
+                    <!-- TOOLBAR OVERLAY -->
+                    <div class="absolute top-6 left-6 z-10 bg-black/70 backdrop-blur-md rounded-xl p-2 border border-white/20 flex items-center space-x-2 text-white text-xs">
+                        <button onclick="adjustImage('rotate')" title="Rotate 90 deg" class="p-2 hover:bg-white/20 rounded transition"><i class="fa-solid fa-rotate-right"></i></button>
+                        <button onclick="adjustImage('zoomIn')" title="Zoom In" class="p-2 hover:bg-white/20 rounded transition"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                        <button onclick="adjustImage('zoomOut')" title="Zoom Out" class="p-2 hover:bg-white/20 rounded transition"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                        <button onclick="adjustImage('contrast')" title="Toggle Contrast Filter" class="p-2 hover:bg-white/20 rounded transition"><i class="fa-solid fa-circle-half-stroke"></i></button>
+                        <button onclick="adjustImage('reset')" title="Reset View" class="p-2 hover:bg-white/20 rounded transition text-egyptair-gold"><i class="fa-solid fa-arrows-rotate"></i> Reset</button>
+                    </div>
+
+                    <!-- IMAGE VIEWPORT -->
+                    <div class="flex-grow flex items-center justify-center overflow-hidden min-h-[350px]">
+                        <img id="modalPassportImage" src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=800" alt="Passport Scan" class="max-h-[420px] object-contain transition-transform duration-200 border rounded shadow-2xl">
+                    </div>
+
+                    <!-- MRZ OVERLAY CHECK -->
+                    <div class="bg-black/80 border border-yellow-500/50 p-3 rounded-xl text-yellow-300 text-xs font-mono flex items-center justify-between">
+                        <div class="flex items-center space-x-2">
+                            <i class="fa-solid fa-barcode text-base"></i>
+                            <span>MRZ Check: <strong id="mrzStatusText">P<EGYALSAYED<<MOHAMED<<<<<<<<<<<<<<<<<< A123456784EGY9001015M2801017<<<<<<<<<<<<<<02</strong></span>
+                        </div>
+                        <span class="bg-green-900 text-green-200 text-[10px] px-2 py-0.5 rounded font-sans uppercase">Valid Format</span>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIDE: VERIFICATION CHECKLIST & ACTIONS (1 COL) -->
+                <div class="p-6 bg-gray-50 flex flex-col justify-between overflow-y-auto space-y-6">
+                    <div class="space-y-4">
+                        <h4 class="text-xs font-bold uppercase text-egyptair-blue border-b pb-2 tracking-wider">Compliance Checklist</h4>
+                        
+                        <div class="space-y-2">
+                            <label class="flex items-center space-x-3 text-xs text-gray-700 p-2 bg-white rounded border hover:bg-gray-100 cursor-pointer">
+                                <input type="checkbox" checked class="rounded text-egyptair-blue focus:ring-egyptair-blue">
+                                <span>Passport Name matches Booking PNR</span>
+                            </label>
+                            <label class="flex items-center space-x-3 text-xs text-gray-700 p-2 bg-white rounded border hover:bg-gray-100 cursor-pointer">
+                                <input type="checkbox" checked class="rounded text-egyptair-blue focus:ring-egyptair-blue">
+                                <span>Document Expiry Date Valid (>6 Months)</span>
+                            </label>
+                            <label class="flex items-center space-x-3 text-xs text-gray-700 p-2 bg-white rounded border hover:bg-gray-100 cursor-pointer">
+                                <input type="checkbox" checked class="rounded text-egyptair-blue focus:ring-egyptair-blue">
+                                <span>Machine Readable Zone (MRZ) Legible</span>
+                            </label>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-gray-700 mb-1">Agent Notes</label>
+                            <textarea id="agentNotes" rows="3" placeholder="Enter internal review notes..." class="w-full p-2.5 text-xs rounded border border-gray-300 focus:ring-2 focus:ring-egyptair-blue outline-none bg-white"></textarea>
+                        </div>
+                    </div>
+
+                    <!-- DECISION BUTTONS -->
+                    <div class="space-y-2 pt-4 border-t">
+                        <button onclick="updateClaimStatus('approved')" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-2.5 rounded-lg text-xs shadow flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-check"></i>
+                            <span>Approve Statutory Compensation</span>
+                        </button>
+                        <button onclick="updateClaimStatus('rejected')" class="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 rounded-lg text-xs shadow flex items-center justify-center space-x-2">
+                            <i class="fa-solid fa-xmark"></i>
+                            <span>Reject Claim</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    <!-- =================================================================== -->
+    <!-- JAVASCRIPT APPLICATION LOGIC                                        -->
+    <!-- =================================================================== -->
+    <script>
+        // MOCK CLAIMS DATABASE
+        let claims = [
+            {
+                id: 'MS-2026-X8921',
+                passenger: 'MOHAMED AL-SAYED',
+                passport: 'A12345678',
+                pnr: 'MS789K',
+                flight: 'MS777 (CAI-LHR)',
+                disruption: 'Flight Delay (>3h)',
+                entitlement: '€400',
+                status: 'pending',
+                image: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=800'
+            },
+            {
+                id: 'MS-2026-Y4310',
+                passenger: 'SARAH SMITH',
+                passport: 'B98765432',
+                pnr: 'MS432P',
+                flight: 'MS985 (CAI-JFK)',
+                disruption: 'Flight Cancellation',
+                entitlement: '€600',
+                status: 'pending',
+                image: 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=800'
+            }
+        ];
+
+        let selectedClaimId = null;
+        let currentRotation = 0;
+        let currentZoom = 1;
+        let isHighContrast = false;
+        let uploadedImageBase64 = null;
+
+        // SWITCH BETWEEN PASSENGER & AGENT VIEWS
+        function switchView(view) {
+            const passengerView = document.getElementById('view-passenger');
+            const agentView = document.getElementById('view-agent');
+            const btnPassenger = document.getElementById('btn-passenger-view');
+            const btnAgent = document.getElementById('btn-agent-view');
+
+            if (view === 'passenger') {
+                passengerView.classList.remove('hidden');
+                agentView.classList.add('hidden');
+                btnPassenger.className = 'px-4 py-2 text-xs md:text-sm font-medium rounded-lg text-white bg-egyptair-gold transition-all duration-200 flex items-center space-x-2 shadow-sm';
+                btnAgent.className = 'px-4 py-2 text-xs md:text-sm font-medium rounded-lg text-gray-300 hover:text-white transition-all duration-200 flex items-center space-x-2';
+            } else {
+                passengerView.classList.add('hidden');
+                agentView.classList.remove('hidden');
+                btnAgent.className = 'px-4 py-2 text-xs md:text-sm font-medium rounded-lg text-white bg-egyptair-gold transition-all duration-200 flex items-center space-x-2 shadow-sm';
+                btnPassenger.className = 'px-4 py-2 text-xs md:text-sm font-medium rounded-lg text-gray-300 hover:text-white transition-all duration-200 flex items-center space-x-2';
+                renderClaimsTable();
+            }
+        }
+
+        // UPDATE CALCULATED COMPENSATION ENTITLEMENT
+        function updateCalculatedTier() {
+            const distance = document.getElementById('routeDistance').value;
+            const badge = document.getElementById('entitlementBadge');
+            const text = document.getElementById('entitlementText');
+
+            if (distance === 'short') {
+                badge.innerText = '€250';
+                text.innerText = 'Short distance flight (<1,500 km) statutory payout';
+            } else if (distance === 'medium') {
+                badge.innerText = '€400';
+                text.innerText = 'Medium distance flight (1,500 km - 3,500 km) statutory payout';
+            } else if (distance === 'long') {
+                badge.innerText = '€600';
+                text.innerText = 'Long distance flight (>3,500 km) statutory payout';
+            }
+        }
+
+        // FILE UPLOAD HANDLER
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                uploadedImageBase64 = e.target.result;
+                document.getElementById('passportImgPreview').src = uploadedImageBase64;
+                document.getElementById('fileNameText').innerText = file.name;
+                document.getElementById('uploadPlaceholder').classList.add('hidden');
+                document.getElementById('uploadPreview').classList.remove('hidden');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removeUploadedFile() {
+            uploadedImageBase64 = null;
+            document.getElementById('passportInput').value = '';
+            document.getElementById('uploadPlaceholder').classList.remove('hidden');
+            document.getElementById('uploadPreview').classList.add('hidden');
+        }
+
+        // SUBMIT FORM
+        function handleClaimSubmit(event) {
+            event.preventDefault();
+            const name = document.getElementById('passengerName').value;
+            const passport = document.getElementById('passportNum').value;
+            const entitlement = document.getElementById('entitlementBadge').innerText;
+            const newClaimId = 'MS-2026-X' + Math.floor(1000 + Math.random() * 9000);
+
+            claims.unshift({
+                id: newClaimId,
+                passenger: name.toUpperCase(),
+                passport: passport.toUpperCase(),
+                pnr: 'MS' + Math.floor(100 + Math.random() * 900) + 'K',
+                flight: 'MS777',
+                disruption: 'Flight Delay (>3h)',
+                entitlement: entitlement,
+                status: 'pending',
+                image: uploadedImageBase64 || 'https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&q=80&w=800'
+            });
+
+            alert(`Claim successfully submitted!\nYour Reference Number is: ${newClaimId}\nSwitching to Customer Care Agent view to review your claim.`);
+            document.getElementById('claimForm').reset();
+            removeUploadedFile();
+            switchView('agent');
+        }
+
+        // RENDER CLAIMS TABLE FOR AGENTS
+        function renderClaimsTable(filter = 'all') {
+            const tbody = document.getElementById('claimsTableBody');
+            tbody.innerHTML = '';
+
+            const filteredClaims = filter === 'all' ? claims : claims.filter(c => c.status === filter);
+
+            filteredClaims.forEach(claim => {
+                let statusBadge = `<span class="bg-yellow-100 text-yellow-800 text-[10px] px-2 py-0.5 rounded font-bold uppercase">Pending</span>`;
+                if (claim.status === 'approved') statusBadge = `<span class="bg-green-100 text-green-800 text-[10px] px-2 py-0.5 rounded font-bold uppercase">Approved</span>`;
+                if (claim.status === 'rejected') statusBadge = `<span class="bg-red-100 text-red-800 text-[10px] px-2 py-0.5 rounded font-bold uppercase">Rejected</span>`;
+
+                const tr = document.createElement('tr');
+                tr.className = 'hover:bg-gray-50 border-b';
+                tr.innerHTML = `
+                    <td class="p-4 font-mono font-bold text-egyptair-blue">${claim.id}</td>
+                    <td class="p-4">${claim.passenger}</td>
+                    <td class="p-4"><span class="font-mono bg-gray-100 px-1.5 py-0.5 rounded border">${claim.pnr}</span></td>
+                    <td class="p-4">${claim.disruption}</td>
+                    <td class="p-4 font-extrabold text-egyptair-blue">${claim.entitlement}</td>
+                    <td class="p-4">${statusBadge}</td>
+                    <td class="p-4 text-center">
+                        <button onclick="openModal('${claim.id}')" class="bg-egyptair-blue hover:bg-egyptair-navy text-white px-3 py-1.5 rounded-md text-xs font-bold transition flex items-center space-x-1 mx-auto shadow-sm">
+                            <i class="fa-solid fa-eye"></i>
+                            <span>Inspect</span>
+                        </button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function filterClaims(val) { renderClaimsTable(val); }
+
+        // MODAL & CANVAS CONTROLS
+        function openModal(claimId) {
+            selectedClaimId = claimId;
+            const claim = claims.find(c => c.id === claimId);
+            if (!claim) return;
+
+            document.getElementById('modalPassengerTitle').innerText = `Passport Verification: ${claim.passenger}`;
+            document.getElementById('modalClaimSub').innerText = `Claim Ref: ${claim.id} | PNR: ${claim.pnr}`;
+            document.getElementById('modalPassportImage').src = claim.image;
+            document.getElementById('passportModal').classList.remove('hidden');
+            adjustImage('reset');
+        }
+
+        function closeModal() {
+            document.getElementById('passportModal').classList.add('hidden');
+        }
+
+        function adjustImage(action) {
+            const img = document.getElementById('modalPassportImage');
+            
+            if (action === 'rotate') currentRotation = (currentRotation + 90) % 360;
+            if (action === 'zoomIn') currentZoom = Math.min(currentZoom + 0.3, 3);
+            if (action === 'zoomOut') currentZoom = Math.max(currentZoom - 0.3, 0.7);
+            if (action === 'contrast') isHighContrast = !isHighContrast;
+            if (action === 'reset') {
+                currentRotation = 0;
+                currentZoom = 1;
+                isHighContrast = false;
+            }
+
+            img.style.transform = `rotate(${currentRotation}deg) scale(${currentZoom})`;
+            img.style.filter = isHighContrast ? 'contrast(200%) grayscale(100%)' : 'none';
+        }
+
+        function updateClaimStatus(newStatus) {
+            const
